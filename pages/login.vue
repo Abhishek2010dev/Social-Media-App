@@ -11,6 +11,28 @@ import {
 import Input from "@/components/ui/input/Input.vue";
 import Button from "@/components/ui/button/Button.vue";
 import { NuxtLink } from "#components";
+import z from "zod";
+import { toTypedSchema } from "@vee-validate/zod";
+import { useForm } from "vee-validate";
+
+const loginSchema = toTypedSchema(
+  z.object({
+    email: z
+      .string({ required_error: "Email is required" })
+      .email({ message: "Please enter a valid email address" }),
+    password: z
+      .string({ required_error: "Password is required" })
+      .min(8, { message: "Password must be at least 8 characters long" }),
+  }),
+);
+
+const { isFieldDirty, handleSubmit } = useForm({
+  validationSchema: loginSchema,
+});
+
+const onSubmit = handleSubmit((v) => {
+  console.table(v);
+});
 </script>
 
 <template>
@@ -18,7 +40,7 @@ import { NuxtLink } from "#components";
     <div class="w-full max-w-sm md:max-w-3xl">
       <Card class="overflow-hidden">
         <CardContent class="grid h-full p-0 md:grid-cols-2">
-          <form class="p-6 md:p-8" @submit.prevent>
+          <form class="p-6 md:p-8" novalidate @submit="onSubmit">
             <div class="flex flex-col gap-6">
               <div class="flex flex-col items-center text-center">
                 <h1 class="text-2xl font-bold">Welcome Back</h1>
@@ -27,7 +49,7 @@ import { NuxtLink } from "#components";
                 </p>
               </div>
               <div class="grid gap-2">
-                <FormField v-slot="{ componentField }" name="email">
+                <FormField v-slot="{ componentField }" name="email" :validate-on-blur="!isFieldDirty">
                   <FormItem>
                     <FormLabel>Email</FormLabel>
                     <FormControl>
@@ -38,7 +60,7 @@ import { NuxtLink } from "#components";
                 </FormField>
               </div>
               <div class="grid gap-2">
-                <FormField v-slot="{ componentField }" name="password">
+                <FormField v-slot="{ componentField }" name="password" :validate-on-blur="!isFieldDirty">
                   <FormItem>
                     <div class="flex items-center justify-between">
                       <FormLabel>Password</FormLabel>
@@ -73,7 +95,6 @@ href="/forget-password"
               </div>
             </div>
           </form>
-
           <div class="relative hidden bg-muted md:flex md:items-stretch">
             <NuxtImg src="/images/login.jpg" alt="Login illustration" class="h-full w-full object-cover" />
           </div>
