@@ -13,7 +13,18 @@ export default defineNuxtConfig({
     "@nuxt/icon",
     "@nuxt/image",
     "shadcn-nuxt",
+    "@nuxtjs/color-mode",
   ],
+  colorMode: {
+    preference: "dark",
+    hid: "nuxt-color-mode-script",
+    globalName: "__NUXT_COLOR_MODE__",
+    componentName: "ColorScheme",
+    classPrefix: "",
+    classSuffix: "",
+    storage: "localStorage",
+    storageKey: "nuxt-color-mode",
+  },
   shadcn: {
     prefix: "",
     componentDir: "./components/ui",
