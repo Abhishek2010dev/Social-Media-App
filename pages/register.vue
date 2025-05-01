@@ -1,3 +1,29 @@
+<script setup lang="ts">
+import { toTypedSchema } from "@vee-validate/zod";
+import { useForm } from "vee-validate";
+import { z } from "zod";
+
+const formSchema = toTypedSchema(
+  z.object({
+    firstName: z.string({ required_error: "First name is required" }),
+    lastName: z.string({ required_error: "Last name is required" }),
+    email: z
+      .string({ required_error: "Email is required" })
+      .email({ message: "Please enter a valid email address" }),
+    password: z
+      .string({ required_error: "Password is required" })
+      .min(8, { message: "Password must be at least 8 characters long" }),
+  }),
+);
+
+const { isFieldDirty, handleSubmit } = useForm({
+  validationSchema: formSchema,
+});
+
+const onSubmit = handleSubmit((v) => {
+  console.table(v);
+});
+</script>
 <template>
   <div class="flex min-h-svh flex-col items-center justify-center p-6 md:p-10">
     <div class="w-full max-w-sm md:max-w-3xl">
@@ -9,11 +35,11 @@
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <form novalidate>
+          <form novalidate @submit.prevent="onSubmit">
             <div class="grid gap-4">
               <div class="grid grid-cols-2 gap-4">
                 <div class="grid gap-2">
-                  <FormField v-slot="{ componentField }" name="first-name">
+                  <FormField v-slot="{ componentField }" name="firstName" :validate-on-blur="!isFieldDirty">
                     <FormItem>
                       <FormLabel>First name</FormLabel>
                       <FormControl>
@@ -24,7 +50,7 @@
                   </FormField>
                 </div>
                 <div class="grid gap-2">
-                  <FormField v-slot="{ componentField }" name="last-name">
+                  <FormField v-slot="{ componentField }" name="lastName" :validate-on-blur="!isFieldDirty">
                     <FormItem>
                       <FormLabel>Last name</FormLabel>
                       <FormControl>
@@ -36,7 +62,7 @@
                 </div>
               </div>
               <div class="grid gap-2">
-                <FormField v-slot="{ componentField }" name="email">
+                <FormField v-slot="{ componentField }" name="email" :validate-on-blur="!isFieldDirty">
                   <FormItem>
                     <FormLabel>Email</FormLabel>
                     <FormControl>
@@ -47,7 +73,7 @@
                 </FormField>
               </div>
               <div class="grid gap-2">
-                <FormField v-slot="{ componentField }" name="password">
+                <FormField v-slot="{ componentField }" name="password" :validate-on-blur="!isFieldDirty">
                   <FormItem>
                     <FormLabel>Password</FormLabel>
                     <FormControl>
