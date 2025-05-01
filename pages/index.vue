@@ -2,8 +2,6 @@
   <div>Home Page</div>
 </template>
 
-<script setup>
-import { Html } from "#components";
-</script>
+<script setup></script>
 
 <style lang="scss" scoped></style>
