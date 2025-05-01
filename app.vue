@@ -1,6 +1,9 @@
+<script setup lang="ts">
+import Button from "./components/ui/button/Button.vue";
+</script>
+
 <template>
   <div>
-    <NuxtRouteAnnouncer />
-    <NuxtWelcome />
+    <Button>Hello, World</Button>
   </div>
 </template>
