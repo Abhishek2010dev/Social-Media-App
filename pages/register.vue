@@ -3,6 +3,11 @@ import { toTypedSchema } from "@vee-validate/zod";
 import { useForm } from "vee-validate";
 import { z } from "zod";
 
+useHead({
+  title: "Register - Snapverse",
+  meta: [{ name: "robots", content: "noindex, nofollow" }],
+});
+
 const formSchema = toTypedSchema(
   z.object({
     firstName: z.string({ required_error: "First name is required" }),
@@ -66,7 +71,7 @@ const onSubmit = handleSubmit((v) => {
                   <FormItem>
                     <FormLabel>Email</FormLabel>
                     <FormControl>
-                      <Input type="email" aria-label="Email" placeholder="m@example.com" v-bind="componentField" />
+                      <Input type="email" aria-label="Email" placeholder="max@example.com" v-bind="componentField" />
                     </FormControl>
                     <FormMessage />
                   </FormItem>

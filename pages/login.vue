@@ -3,6 +3,11 @@ import z from "zod";
 import { toTypedSchema } from "@vee-validate/zod";
 import { useForm } from "vee-validate";
 
+useHead({
+  title: "Login - Snapverse",
+  meta: [{ name: "robots", content: "noindex, nofollow" }],
+});
+
 const loginSchema = toTypedSchema(
   z.object({
     email: z
@@ -41,7 +46,7 @@ const onSubmit = handleSubmit((v) => {
                   <FormItem>
                     <FormLabel>Email</FormLabel>
                     <FormControl>
-                      <Input type="email" aria-label="Email" placeholder="m@example.com" v-bind="componentField" />
+                      <Input type="email" aria-label="Email" placeholder="max@example.com" v-bind="componentField" />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
