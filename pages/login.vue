@@ -1,16 +1,4 @@
 <script setup lang="ts">
-import Card from "~/components/ui/card/Card.vue";
-import CardContent from "~/components/ui/card/CardContent.vue";
-import {
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "@/components/ui/form";
-import Input from "@/components/ui/input/Input.vue";
-import Button from "@/components/ui/button/Button.vue";
-import { NuxtLink } from "#components";
 import z from "zod";
 import { toTypedSchema } from "@vee-validate/zod";
 import { useForm } from "vee-validate";
