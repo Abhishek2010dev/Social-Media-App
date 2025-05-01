@@ -28,7 +28,7 @@ const onSubmit = handleSubmit((v) => {
     <div class="w-full max-w-sm md:max-w-3xl">
       <Card class="overflow-hidden">
         <CardContent class="grid h-full p-0 md:grid-cols-2">
-          <form class="p-6 md:p-8" novalidate @submit="onSubmit">
+          <form class="p-6 md:p-8" novalidate @submit.prevent="onSubmit">
             <div class="flex flex-col gap-6">
               <div class="flex flex-col items-center text-center">
                 <h1 class="text-2xl font-bold">Welcome Back</h1>
