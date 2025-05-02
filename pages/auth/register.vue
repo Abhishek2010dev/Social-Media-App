@@ -137,7 +137,9 @@ const onSubmit = handleSubmit(async (v) => {
             </div>
             <div class="mt-4 text-center text-sm">
               Already have an account?
-              <NuxtLink href="/login" class="underline"> Sign in </NuxtLink>
+              <NuxtLink href="/auth/login" class="underline">
+                Sign in
+              </NuxtLink>
             </div>
           </form>
         </CardContent>

@@ -112,7 +112,7 @@ const onSubmit = handleSubmit((v) => {
               </Button>
               <div class="text-center text-sm text-muted-foreground">
                 Don't have an account?
-                <NuxtLink href="/register" class="text-primary underline underline-offset-4">
+                <NuxtLink href="/auth/register" class="text-primary underline underline-offset-4">
                   Sign up
                 </NuxtLink>
               </div>
