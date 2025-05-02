@@ -2,6 +2,7 @@
 import { toTypedSchema } from "@vee-validate/zod";
 import { useForm } from "vee-validate";
 import { z } from "zod";
+import { toast } from "vue-sonner";
 
 useHead({
   title: "Register - Snapverse",
@@ -31,6 +32,8 @@ const { isFieldDirty, handleSubmit } = useForm({
 
 const { signUp } = useAuthClient();
 
+const pending = ref(false);
+
 const onSubmit = handleSubmit(async (v) => {
   await signUp.email({
     email: v.email,
@@ -38,11 +41,22 @@ const onSubmit = handleSubmit(async (v) => {
     name: `${v.firstName} ${v.lastName}`,
     callbackURL: "/",
     fetchOptions: {
+      onRequest() {
+        pending.value = true;
+      },
+      onResponse() {
+        pending.value = false;
+      },
       onError(context) {
-        console.error(`Register msg: ${context.error.message}`);
+        toast.error("Error", {
+          description: context.error.message,
+        });
       },
       onSuccess() {
-        useRouter().push("/dashboard");
+        toast.success(
+          "Registration complete. Check your email to verify your account",
+        );
+        navigateTo("/");
       },
     },
   });
@@ -107,8 +121,17 @@ const onSubmit = handleSubmit(async (v) => {
                   </FormItem>
                 </FormField>
               </div>
-              <Button type="submit" class="w-full"> Create an account </Button>
-              <Button variant="outline" class="w-full">
+
+              <Button type="submit" class="w-full" :disabled="pending">
+                <template v-if="pending">
+                  <Icon name="line-md:loading-loop" class="text-3xl" />
+                  Creating account...
+                </template>
+                <template v-else> Create an account </template>
+              </Button>
+
+              <Button variant="outline" class="w-full" :disabled="pending">
+                <Icon name="uil:github" class="text-3xl" />
                 Sign up with GitHub
               </Button>
             </div>

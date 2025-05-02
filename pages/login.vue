@@ -75,6 +75,7 @@ const onSubmit = handleSubmit((v) => {
                 <div class="absolute inset-0 top-1/2 z-0 flex items-center border-t border-border" />
               </div>
               <Button variant="outline" class="w-full">
+                <Icon name="uil:github" class="text-3xl" />
                 Login with GitHub
               </Button>
               <div class="text-center text-sm text-muted-foreground">
