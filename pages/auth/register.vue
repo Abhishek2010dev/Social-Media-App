@@ -30,7 +30,7 @@ const { isFieldDirty, handleSubmit } = useForm({
   validationSchema: formSchema,
 });
 
-const { signUp } = useAuthClient();
+const { signUp, signIn } = useAuthClient();
 
 const pending = ref(false);
 
@@ -61,6 +61,12 @@ const onSubmit = handleSubmit(async (v) => {
     },
   });
 });
+
+const handleGithubAuth = async () => {
+  await signIn.social({
+    provider: "github",
+  });
+};
 </script>
 <template>
   <div class="flex min-h-svh flex-col items-center justify-center p-6 md:p-10">
@@ -130,7 +136,7 @@ const onSubmit = handleSubmit(async (v) => {
                 <template v-else> Create an account </template>
               </Button>
 
-              <Button variant="outline" class="w-full" :disabled="pending">
+              <Button variant="outline" class="w-full" :disabled="pending" @click="handleGithubAuth">
                 <Icon name="uil:github" class="text-3xl" />
                 Sign up with GitHub
               </Button>

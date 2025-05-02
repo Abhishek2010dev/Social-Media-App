@@ -56,6 +56,12 @@ const onSubmit = handleSubmit((v) => {
     },
   });
 });
+
+const handleGithubAuth = async () => {
+  await signIn.social({
+    provider: "github",
+  });
+};
 </script>
 
 <template>
@@ -106,7 +112,7 @@ const onSubmit = handleSubmit((v) => {
                 </span>
                 <div class="absolute inset-0 top-1/2 z-0 flex items-center border-t border-border" />
               </div>
-              <Button variant="outline" class="w-full">
+              <Button variant="outline" class="w-full" @click="handleGithubAuth">
                 <Icon name="uil:github" class="text-3xl" />
                 Login with GitHub
               </Button>
