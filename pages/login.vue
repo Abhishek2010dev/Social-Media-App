@@ -57,8 +57,7 @@ const onSubmit = handleSubmit((v) => {
                   <FormItem>
                     <div class="flex items-center justify-between">
                       <FormLabel>Password</FormLabel>
-                      <NuxtLink
-href="/forget-password"
+                      <NuxtLink href="/forget-password"
                         class="text-sm text-muted-foreground underline-offset-2 hover:underline">
                         Forgot your password?
                       </NuxtLink>
