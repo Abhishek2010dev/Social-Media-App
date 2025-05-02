@@ -16,7 +16,7 @@ export default defineNuxtConfig({
     "@nuxtjs/color-mode",
   ],
   colorMode: {
-    preference: "light",
+    preference: "dark",
     hid: "nuxt-color-mode-script",
     globalName: "__NUXT_COLOR_MODE__",
     componentName: "ColorScheme",
@@ -30,4 +30,9 @@ export default defineNuxtConfig({
     componentDir: "./components/ui",
   },
   pages: true,
+  nitro: {
+    experimental: {
+      openAPI: true,
+    },
+  },
 });
