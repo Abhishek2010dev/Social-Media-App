@@ -9,7 +9,7 @@ const emailVerification = {
 		await sendEmail({
 			to: user.email,
 			subject: "Verify Your Email Address for Snapverse",
-			text: `Hi ${user.name || "there"},\n\nThank you for signing up for [Your App Name]!\n\nTo complete your registration, please verify your email address by clicking the link below:\n\n${url}\n\nThis link will expire in 1 hour. If you didn't request this, please ignore this message.\n\nThanks,\nThe [Your App Name] Team`,
+			text: `Hi ${user.name || "there"},\n\nThank you for signing up for Snapverse!\n\nTo complete your registration, please verify your email address by clicking the link below:\n\n${url}\n\nThis link will expire in 1 hour. If you didn't request this, please ignore this message.\n\nThanks,\nThe Snapverse Team`,
 			html: `
 				<p>Hi ${user.name || "there"},</p>
 				<p>Thank you for signing up for <strong>Snapverse</strong>!</p>
