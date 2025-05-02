@@ -1,9 +1,7 @@
 <template>
-  <div>{{ user.name }}</div>
+  <div />
 </template>
 
-<script setup>
-const user = await useAuthUser();
-</script>
+<script setup></script>
 
 <style lang="scss" scoped></style>
