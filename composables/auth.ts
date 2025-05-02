@@ -8,8 +8,5 @@ export const useAuthClient = () => {
 
 export const useAuthUser = async () => {
   const authClient = useAuthClient();
-
-  return {
-    user: (await authClient.useSession(useFetch)).data.value?.user,
-  };
+  return (await authClient.useSession(useFetch)).data.value?.user;
 };

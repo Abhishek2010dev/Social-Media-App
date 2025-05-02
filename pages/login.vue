@@ -2,6 +2,7 @@
 import z from "zod";
 import { toTypedSchema } from "@vee-validate/zod";
 import { useForm } from "vee-validate";
+import { toast } from "vue-sonner";
 
 useHead({
   title: "Login - Snapverse",
@@ -27,8 +28,33 @@ const { isFieldDirty, handleSubmit } = useForm({
   validationSchema: loginSchema,
 });
 
+const { signIn } = useAuthClient();
+
+const pending = ref(false);
+
 const onSubmit = handleSubmit((v) => {
-  console.table(v);
+  signIn.email({
+    email: v.email,
+    password: v.password,
+    callbackURL: "/",
+    fetchOptions: {
+      onRequest() {
+        pending.value = true;
+      },
+      onResponse() {
+        pending.value = false;
+      },
+      onError(context) {
+        toast.error("Error", {
+          description: context.error.message,
+        });
+      },
+      onSuccess() {
+        toast.success("Welcome back! You're now logged in.");
+        navigateTo("/");
+      },
+    },
+  });
 });
 </script>
 
@@ -67,7 +93,13 @@ const onSubmit = handleSubmit((v) => {
                   </FormItem>
                 </FormField>
               </div>
-              <Button type="submit" class="w-full">Login</Button>
+              <Button type="submit" class="w-full" :disabled="pending">
+                <template v-if="pending">
+                  <Icon name="line-md:loading-loop" class="text-3xl" />
+                  Logging in...
+                </template>
+                <template v-else> Login </template>
+              </Button>
               <div class="relative text-center text-sm">
                 <span class="relative z-10 bg-background px-2 text-muted-foreground">
                   Or continue with
