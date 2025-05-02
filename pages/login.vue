@@ -8,6 +8,10 @@ useHead({
   meta: [{ name: "robots", content: "noindex, nofollow" }],
 });
 
+definePageMeta({
+  layout: "auth",
+});
+
 const loginSchema = toTypedSchema(
   z.object({
     email: z
@@ -55,13 +59,7 @@ const onSubmit = handleSubmit((v) => {
               <div class="grid gap-2">
                 <FormField v-slot="{ componentField }" name="password" :validate-on-blur="!isFieldDirty">
                   <FormItem>
-                    <div class="flex items-center justify-between">
-                      <FormLabel>Password</FormLabel>
-                      <NuxtLink href="/forget-password"
-                        class="text-sm text-muted-foreground underline-offset-2 hover:underline">
-                        Forgot your password?
-                      </NuxtLink>
-                    </div>
+                    <FormLabel>Password</FormLabel>
                     <FormControl>
                       <Input type="password" aria-label="Password" v-bind="componentField" />
                     </FormControl>

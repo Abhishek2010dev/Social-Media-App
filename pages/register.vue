@@ -8,6 +8,10 @@ useHead({
   meta: [{ name: "robots", content: "noindex, nofollow" }],
 });
 
+definePageMeta({
+  layout: "auth",
+});
+
 const formSchema = toTypedSchema(
   z.object({
     firstName: z.string({ required_error: "First name is required" }),
@@ -25,8 +29,23 @@ const { isFieldDirty, handleSubmit } = useForm({
   validationSchema: formSchema,
 });
 
-const onSubmit = handleSubmit((v) => {
-  console.table(v);
+const { signUp } = useAuthClient();
+
+const onSubmit = handleSubmit(async (v) => {
+  await signUp.email({
+    email: v.email,
+    password: v.password,
+    name: `${v.firstName} ${v.lastName}`,
+    callbackURL: "/",
+    fetchOptions: {
+      onError(context) {
+        console.error(`Register msg: ${context.error.message}`);
+      },
+      onSuccess() {
+        useRouter().push("/dashboard");
+      },
+    },
+  });
 });
 </script>
 <template>
