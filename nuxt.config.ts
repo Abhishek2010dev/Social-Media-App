@@ -14,6 +14,7 @@ export default defineNuxtConfig({
     "@nuxt/image",
     "shadcn-nuxt",
     "@nuxtjs/color-mode",
+    "@pinia/nuxt",
   ],
   colorMode: {
     preference: "dark",

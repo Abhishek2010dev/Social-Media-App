@@ -5,8 +5,3 @@ export const useAuthClient = () => {
     plugins: [],
   });
 };
-
-export const useAuthUser = async () => {
-  const authClient = useAuthClient();
-  return (await authClient.useSession(useFetch)).data.value?.user;
-};

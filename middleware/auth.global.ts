@@ -1,14 +1,21 @@
+import { useAuthUserData } from "~/stores/auth";
+
 export default defineNuxtRouteMiddleware(async (to) => {
+  const authUserData = useAuthUserData();
+
   if (to.matched.length === 0) return;
-  const { data } = await useAuthClient().useSession(useFetch);
+
+  if (!authUserData.data) {
+    await authUserData.fetchUser();
+  }
 
   const isAuthRoute = to.path.startsWith("/auth");
 
-  if (!data.value && !isAuthRoute) {
+  if (!authUserData.data && !isAuthRoute) {
     return navigateTo("/auth/login");
   }
 
-  if (data.value && isAuthRoute) {
+  if (authUserData.data && isAuthRoute) {
     return navigateTo("/");
   }
 });
