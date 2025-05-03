@@ -11,8 +11,7 @@ import SidebarMenuItem from "./ui/sidebar/SidebarMenuItem.vue";
 import SidebarMenuButton from "./ui/sidebar/SidebarMenuButton.vue";
 import SidebarFooter from "./ui/sidebar/SidebarFooter.vue";
 import SidebarRail from "./ui/sidebar/SidebarRail.vue";
-import Button from "./ui/button/Button.vue"; // assuming you have a Button component
-
+import Button from "./ui/button/Button.vue";
 import type { FunctionalComponent } from "vue";
 
 type Item = {
@@ -21,7 +20,12 @@ type Item = {
 	icon: FunctionalComponent<LucideProps>;
 };
 
-const { fullPath, name, email, items } = defineProps<{
+const {
+	fullPath,
+	name = "User",
+	email = "anonymous",
+	items,
+} = defineProps<{
 	fullPath: string;
 	name?: string;
 	email?: string;
@@ -46,12 +50,11 @@ const { fullPath, name, email, items } = defineProps<{
 			<div class="flex items-center gap-3 rounded-lg p-2 hover:bg-accent">
 				<div
 					class="w-10 h-10 rounded-full bg-blue-500 text-white flex items-center justify-center font-semibold">
-					{{ name?.charAt(0).toUpperCase() || "U" }}
+					{{ name.charAt(0).toUpperCase() }}
 				</div>
 				<div class="flex flex-1 flex-col">
-					<span class="font-medium">{{ name?.split(" ")[0] || "User" }}</span>
-					<span class="text-xs text-muted-foreground">@{{ email?.split("@")[0] ||
-						"anonymous" }}</span>
+					<span class="font-medium">{{ name.split(" ")[0] }}</span>
+					<span class="text-xs text-muted-foreground">@{{ email.split("@")[0] }}</span>
 				</div>
 			</div>
 		</SidebarHeader>
