@@ -20,17 +20,17 @@ type Item = {
 	icon: FunctionalComponent<LucideProps>;
 };
 
-const {
-	fullPath,
-	name = "User",
-	email = "anonymous",
-	items,
-} = defineProps<{
+const { fullPath, items } = defineProps<{
 	fullPath: string;
-	name?: string;
-	email?: string;
 	items: Item[];
 }>();
+
+const authUserData = useAuthUserData();
+
+const logout = async () => {
+	await useAuthClient().signOut();
+	location.reload();
+};
 </script>
 
 <template>
@@ -50,11 +50,14 @@ const {
 			<div class="flex items-center gap-3 rounded-lg p-2 hover:bg-accent">
 				<div
 					class="w-10 h-10 rounded-full bg-blue-500 text-white flex items-center justify-center font-semibold">
-					{{ name.charAt(0).toUpperCase() }}
+					{{ authUserData.data?.name.charAt(0).toUpperCase() }}
 				</div>
 				<div class="flex flex-1 flex-col">
-					<span class="font-medium">{{ name.split(" ")[0] }}</span>
-					<span class="text-xs text-muted-foreground">@{{ email.split("@")[0] }}</span>
+					<span class="font-medium">{{
+						authUserData.data?.name.split(" ")[0]
+					}}</span>
+					<span class="text-xs text-muted-foreground">@{{
+						authUserData.data?.email.split("@")[0] }}</span>
 				</div>
 			</div>
 		</SidebarHeader>
@@ -65,8 +68,7 @@ const {
 					<SidebarMenu>
 						<SidebarMenuItem v-for="item in items" :key="item.title">
 							<SidebarMenuButton as-child :is-active="fullPath === item.url">
-								<NuxtLink
-:href="item.url"
+								<NuxtLink :href="item.url"
 									class="flex items-center gap-3">
 									<component :is="item.icon" class="h-5 w-5" />
 									<span>{{ item.title }}</span>
@@ -82,9 +84,9 @@ const {
 			<SidebarMenu>
 				<SidebarMenuItem>
 					<SidebarMenuButton as-child>
-						<Button
-variant="ghost"
-							class="w-full justify-start gap-3 text-destructive hover:text-destructive">
+						<Button variant="ghost"
+							class="w-full justify-start gap-3 text-destructive hover:text-destructive"
+							@click="logout">
 							<LogOut class="h-5 w-5" />
 							<span>Logout</span>
 						</Button>

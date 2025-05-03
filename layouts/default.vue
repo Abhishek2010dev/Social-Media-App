@@ -35,8 +35,6 @@ const items = [
 	},
 ];
 
-const authUserData = useAuthUserData();
-
 const title = computed(() => {
 	return items.filter((v) => v.url === route.fullPath)[0].title;
 });
@@ -44,8 +42,7 @@ const title = computed(() => {
 
 <template>
 	<SidebarProvider>
-		<AppSidebar :full-path="route.fullPath" :name="authUserData.data?.name"
-			:email="authUserData.data?.email" :items="items" />
+		<AppSidebar :full-path="route.fullPath" :items="items" />
 		<SidebarInset>
 			<header class="flex h-16 items-center border-b px-4">
 				<SidebarTrigger class="mr-2" />

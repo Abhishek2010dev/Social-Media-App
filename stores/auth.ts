@@ -18,8 +18,7 @@ export const useAuthUserData = defineStore("user-data", {
   },
   actions: {
     async fetchUser() {
-      const { data } = await useAuthClient().useSession(useFetch);
-      this.data = data.value?.user;
+      this.data = (await useAuthClient().useSession(useFetch)).data.value?.user;
     },
   },
 });
