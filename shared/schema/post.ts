@@ -1,59 +1,86 @@
 import { z } from "zod";
 
-export const postSchema = z.object({
-	id: z
-		.number({
-			invalid_type_error: "Post ID must be a number",
-		})
-		.int("Post ID must be an integer")
-		.optional(),
+export const MAX_FILE_SIZE = 2 * 1024 * 1024; // 2MB
 
+const ACCEPTED_IMAGE_TYPES = ["image/jpeg", "image/png", "image/gif"];
+
+export const createPostClientSchema = z.object({
 	caption: z
 		.string({
-			required_error: "Caption is required",
-			invalid_type_error: "Caption must be a string",
+			required_error: "Please enter a caption",
+			invalid_type_error: "Caption must be a text string",
 		})
 		.min(1, "Caption cannot be empty"),
 
-	tags: z.array(z.string({ invalid_type_error: "Each tag must be a string" }), {
-		invalid_type_error: "Tags must be an array of strings",
-		required_error: "Tags are required",
-	}),
+	tags: z.array(
+		z
+			.string({ invalid_type_error: "Each tag must be a string" })
+			.min(1, "Tags cannot be empty"),
+		{
+			required_error: "Please provide at least one tag",
+			invalid_type_error: "Tags must be a list of strings",
+		},
+	),
 
 	location: z
 		.string({
-			required_error: "Location is required",
-			invalid_type_error: "Location must be a string",
+			required_error: "Please enter a location",
+			invalid_type_error: "Location must be a text string",
 		})
 		.min(1, "Location cannot be empty"),
 
-	likes: z
-		.number({
-			invalid_type_error: "Likes must be a number",
+	file: z
+		.custom<File>((file) => file instanceof File, "You must upload an image")
+		.refine((file) => ACCEPTED_IMAGE_TYPES.includes(file.type), {
+			message: "Only JPEG, PNG, or GIF images are allowed",
 		})
-		.int("Likes must be an integer")
-		.nonnegative("Likes cannot be negative")
-		.default(0),
+		.refine((file) => file.size <= MAX_FILE_SIZE, {
+			message: "Image must be 2MB or smaller",
+		}),
+});
 
-	imagePath: z
+export const createPostServerSchema = z.object({
+	caption: z
 		.string({
-			required_error: "Image path is required",
-			invalid_type_error: "Image path must be a string",
+			required_error: "Please enter a caption",
+			invalid_type_error: "Caption must be a text string",
 		})
-		.min(1, "Image path cannot be empty"),
+		.min(1, "Caption cannot be empty"),
 
-	createdAt: z
-		.date({
-			required_error: "Creation date is required",
-			invalid_type_error: "CreatedAt must be a valid Date object",
-		})
-		.optional(),
+	tags: z.array(
+		z
+			.string({ invalid_type_error: "Each tag must be a string" })
+			.min(1, "Tags cannot be empty"),
+		{
+			required_error: "Please provide at least one tag",
+			invalid_type_error: "Tags must be a list of strings",
+		},
+	),
 
-	userId: z
+	location: z
 		.string({
-			required_error: "User ID is required",
-			invalid_type_error: "User ID must be a string",
+			required_error: "Please enter a location",
+			invalid_type_error: "Location must be a text string",
 		})
-		.min(1, "User ID cannot be empty")
-		.optional(),
+		.min(1, "Location cannot be empty"),
+
+	file: z
+		.object({
+			filename: z.string().min(1, "Filename is required"),
+			type: z.enum(["image/jpeg", "image/png", "image/gif"], {
+				errorMap: () => ({
+					message: "Only JPEG, PNG, or GIF images are allowed",
+				}),
+			}),
+			data: z
+				.instanceof(Uint8Array, {
+					message: "Image data must be a Uint8Array (binary)",
+				})
+				.refine((data) => data.length <= MAX_FILE_SIZE, {
+					message: "Image must be 2MB or smaller",
+				}),
+		})
+		.refine((file) => !!file.filename, {
+			message: "An image file is required",
+		}),
 });

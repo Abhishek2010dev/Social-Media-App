@@ -35,5 +35,11 @@ export default defineNuxtConfig({
     experimental: {
       openAPI: true,
     },
+    storage: {
+      uploads: {
+        driver: "fs",
+        base: "./public/uploads",
+      },
+    },
   },
 });

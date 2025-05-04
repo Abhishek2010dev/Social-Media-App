@@ -1,4 +1,5 @@
 export default defineEventHandler(async (event) => {
+	return;
 	const pathname = event.path;
 
 	if (!pathname.startsWith("/api") || pathname.startsWith("/api/auth")) return;
