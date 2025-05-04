@@ -2,10 +2,23 @@ import { H3Error, type MultiPartData } from "h3";
 import { db } from "~/server/database/client";
 import { post } from "~/server/database/post.schema";
 import type { AuthUser } from "~/shared/types/auth";
+import { z } from "zod";
 
+export const MAX_FILE_SIZE = 2 * 1024 * 1024;
+
+const UploadSchema = z.object({
+	filename: z.string().min(1, "Filename is required"),
+	type: z.enum(["image/jpeg", "image/png", "image/gif"]),
+	data: z
+		.instanceof(Uint8Array)
+		.refine((data) => data.length <= MAX_FILE_SIZE, {
+			message: "File exceeds maximum size of 2MB",
+		}),
+});
+
+// Main handler
 export default defineEventHandler(async (event) => {
 	try {
-		console.log("I am called");
 		const formData = await readMultipartFormData(event);
 		if (!formData || formData.length === 0) {
 			throw createError({
@@ -19,32 +32,6 @@ export default defineEventHandler(async (event) => {
 			throw createError({
 				statusCode: 400,
 				statusMessage: error?.message || "Invalid form data",
-			});
-		}
-
-		if (
-			!data.image.filename ||
-			!data.image.type ||
-			!data.image.data ||
-			!(data.image.data instanceof Uint8Array)
-		) {
-			throw createError({
-				statusCode: 400,
-				statusMessage: "Invalid image file",
-			});
-		}
-
-		if (!["image/jpeg", "image/png", "image/gif"].includes(data.image.type)) {
-			throw createError({
-				statusCode: 400,
-				statusMessage: "Only JPEG, PNG, or GIF images are allowed",
-			});
-		}
-
-		if (data.image.data.length > MAX_FILE_SIZE) {
-			throw createError({
-				statusCode: 400,
-				statusMessage: "Image must be 2MB or smaller",
 			});
 		}
 
@@ -82,7 +69,11 @@ type CreatePostPayload = {
 	location: string;
 	tags: string;
 	caption: string;
-	image: Required<Pick<MultiPartData, "filename" | "type" | "data">>;
+	image: {
+		filename: string;
+		type: string;
+		data: Uint8Array;
+	};
 };
 
 function parseMultiPartFormData(
@@ -114,14 +105,18 @@ function parseMultiPartFormData(
 		];
 	}
 
+	const result = UploadSchema.safeParse(image);
+	if (!result.success) {
+		return [null, new Error(result.error.errors[0].message)];
+	}
+
 	return [
 		{
 			caption,
 			location,
 			tags,
-			image,
+			image: result.data,
 		},
 		null,
 	];
 }
-export const MAX_FILE_SIZE = 2 * 1024 * 1024;
