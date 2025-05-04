@@ -12,15 +12,12 @@ export const createPostClientSchema = z.object({
 		})
 		.min(1, "Caption cannot be empty"),
 
-	tags: z.array(
-		z
-			.string({ invalid_type_error: "Each tag must be a string" })
-			.min(1, "Tags cannot be empty"),
-		{
-			required_error: "Please provide at least one tag",
-			invalid_type_error: "Tags must be a list of strings",
-		},
-	),
+	tags: z
+		.string({
+			required_error: "Please enter at least one tag",
+			invalid_type_error: "Tags must be a comma-separated string",
+		})
+		.min(1, "Tags cannot be empty"),
 
 	location: z
 		.string({
@@ -47,15 +44,12 @@ export const createPostServerSchema = z.object({
 		})
 		.min(1, "Caption cannot be empty"),
 
-	tags: z.array(
-		z
-			.string({ invalid_type_error: "Each tag must be a string" })
-			.min(1, "Tags cannot be empty"),
-		{
-			required_error: "Please provide at least one tag",
-			invalid_type_error: "Tags must be a list of strings",
-		},
-	),
+	tags: z
+		.string({
+			required_error: "Please enter at least one tag",
+			invalid_type_error: "Tags must be a comma-separated string",
+		})
+		.min(1, "Tags cannot be empty"),
 
 	location: z
 		.string({
