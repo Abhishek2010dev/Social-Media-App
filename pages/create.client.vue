@@ -65,6 +65,7 @@ watch(image, (newFile) => {
 
 const onSubmit = handleSubmit(async (values) => {
   try {
+    pending.value = true;
     const formData = new FormData();
     formData.append("caption", values.caption);
     formData.append("location", values.location);
@@ -91,6 +92,8 @@ const onSubmit = handleSubmit(async (values) => {
       statusCode: 500,
       statusMessage: "An unknown error occurred",
     });
+  } finally {
+    pending.value = false;
   }
 });
 </script>
@@ -115,16 +118,13 @@ const onSubmit = handleSubmit(async (values) => {
           <FormLabel class="text-base font-medium">Add Photo</FormLabel>
           <FormControl>
             <Card class="w-full h-72 p-4">
-              <label
-for="file-upload"
+              <label for="file-upload"
                 class="w-full h-full flex items-center justify-center rounded-xl cursor-pointer border-2 border-dashed border-gray-300 dark:border-gray-600 hover:border-blue-500 hover:bg-blue-50/30 dark:hover:bg-blue-500/10 transition-all">
                 <template v-if="!preview">
                   <div class="text-gray-400 dark:text-gray-500 flex flex-col items-center">
-                    <svg
-xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 mb-2" fill="none" viewBox="0 0 24 24"
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 mb-2" fill="none" viewBox="0 0 24 24"
                       stroke="currentColor">
-                      <path
-stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                         d="M4 16v1a2 2 0 002 2h12a2 2 0 002-2v-1M12 12V4m0 0l-4 4m4-4l4 4" />
                     </svg>
                     <span class="text-sm">Click to upload</span>
@@ -132,9 +132,8 @@ stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                 </template>
                 <template v-else>
                   <div class="relative w-full h-full group">
-                    <img
-:src="preview" alt="Preview"
-                      class="w-full h-full object-cover rounded-xl transition-opacity duration-300 group-hover:opacity-90" >
+                    <img :src="preview" alt="Preview"
+                      class="w-full h-full object-cover rounded-xl transition-opacity duration-300 group-hover:opacity-90">
                     <div
                       class="absolute inset-0 bg-black/30 opacity-0 group-hover:opacity-100 flex items-center justify-center text-white text-sm font-medium rounded-xl transition">
                       Change Image
@@ -142,9 +141,8 @@ stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                   </div>
                 </template>
               </label>
-              <input
-id="file-upload" type="file" accept="image/*" class="hidden" @change="handleChange"
-                @blur="handleBlur" >
+              <input id="file-upload" type="file" accept="image/*" class="hidden" @change="handleChange"
+                @blur="handleBlur">
             </Card>
           </FormControl>
           <FormMessage />
@@ -169,8 +167,7 @@ id="file-upload" type="file" accept="image/*" class="hidden" @change="handleChan
         <FormItem>
           <FormLabel class="text-base font-medium">Tags</FormLabel>
           <FormControl>
-            <TagsInput
-:model-value="componentField.modelValue"
+            <TagsInput :model-value="componentField.modelValue"
               @update:model-value="componentField['onUpdate:modelValue']">
               <TagsInputItem v-for="item in componentField.modelValue" :key="item" :value="item">
                 <TagsInputItemText />
