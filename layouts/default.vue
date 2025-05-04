@@ -42,13 +42,16 @@ const title = computed(() => {
 
 <template>
 	<SidebarProvider>
+		<ClientOnly>
+			<Toaster />
+		</ClientOnly>
 		<AppSidebar :full-path="route.fullPath" :items="items" />
 		<SidebarInset>
 			<header class="flex h-16 items-center border-b px-4">
 				<SidebarTrigger class="mr-2" />
 				<h1 className="text-xl font-semibold">{{ title }}</h1>
 			</header>
-			<main className="mx-auto flex max-w-2xl flex-1 flex-col gap-4 p-4">
+			<main className="flex flex-col gap-4 p-4">
 				<slot />
 			</main>
 		</SidebarInset>

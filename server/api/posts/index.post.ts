@@ -16,7 +16,6 @@ const UploadSchema = z.object({
 		}),
 });
 
-// Main handler
 export default defineEventHandler(async (event) => {
 	try {
 		const formData = await readMultipartFormData(event);
