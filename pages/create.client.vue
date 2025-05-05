@@ -4,6 +4,7 @@ import { toTypedSchema } from "@vee-validate/zod";
 import { z } from "zod";
 import { FetchError } from "ofetch";
 import { toast } from "vue-sonner";
+import { ImagePlus, X } from "lucide-vue-next";
 
 const MAX_FILE_SIZE = 2 * 1024 * 1024;
 const ACCEPTED_IMAGE_TYPES = ["image/jpeg", "image/png", "image/gif"];
@@ -97,106 +98,129 @@ const onSubmit = handleSubmit(async (values) => {
     pending.value = false;
   }
 });
+
+const triggerFileInput = () => {
+  const fileInput = document.getElementById("image") as HTMLInputElement;
+  if (fileInput) {
+    fileInput.click();
+  }
+};
+
+const clearImagePreview = (event: MouseEvent) => {
+  event.stopPropagation();
+  preview.value = null;
+  const fileInput = document.getElementById("image") as HTMLInputElement;
+  if (fileInput) {
+    fileInput.value = "";
+  }
+};
 </script>
 
 <template>
-  <form class="w-full space-y-6" @submit.prevent="onSubmit">
-    <FormField v-slot="{ componentField }" name="caption">
-      <FormItem>
-        <FormLabel class="text-white">Add Caption</FormLabel>
-        <FormControl>
-          <Textarea
-v-bind="componentField" rows="3" placeholder="Write your caption..."
-            class="bg-[#1a1a1d] text-white border border-[#333] placeholder-gray-500 focus:border-blue-500 focus:ring-0 rounded-lg" />
-        </FormControl>
-        <FormMessage />
-      </FormItem>
-    </FormField>
-
-    <FormField v-slot="{ handleChange, handleBlur }" name="image">
-      <FormItem>
-        <FormLabel class="text-white">Add Photo</FormLabel>
-        <FormControl>
-          <Card class="w-full h-72 p-4 bg-[#1a1a1d] border border-[#333] rounded-lg">
-            <label
-for="file-upload"
-              class="w-full h-full flex items-center justify-center rounded-lg cursor-pointer border-2 border-dashed border-[#444] hover:border-blue-500 hover:bg-[#2a2a2d] transition-all">
-              <template v-if="!preview">
-                <div class="text-gray-500 flex flex-col items-center">
-                  <svg
-xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 mb-2" fill="none" viewBox="0 0 24 24"
-                    stroke="currentColor">
-                    <path
-stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                      d="M4 16v1a2 2 0 002 2h12a2 2 0 002-2v-1M12 12V4m0 0l-4 4m4-4l4 4" />
-                  </svg>
-                  <span class="text-sm">Click to upload</span>
-                </div>
-              </template>
-              <template v-else>
-                <div class="relative w-full h-full group">
-                  <img
-:src="preview" alt="Preview"
-                    class="w-full h-full object-cover rounded-lg transition-opacity duration-300 group-hover:opacity-90" >
-                  <div
-                    class="absolute inset-0 bg-black/30 opacity-0 group-hover:opacity-100 flex items-center justify-center text-white text-sm font-medium rounded-lg transition">
-                    Change Image
+  <form novalidate @submit.prevent="onSubmit">
+    <Card>
+      <CardHeader>
+        <CardTitle>Create a new post</CardTitle>
+      </CardHeader>
+      <CardContent class="space-y-6">
+        <div class="space-y-2">
+          <FormField v-slot="{ handleChange, handleBlur }" name="image">
+            <FormItem>
+              <FormLabel>Upload Image</FormLabel>
+              <FormControl>
+                <div
+:class="[
+                  'relative flex min-h-[200px] cursor-pointer flex-col items-center justify-center rounded-lg border-2 border-dashed p-4 transition-all hover:bg-muted/50',
+                  preview ? 'border-primary' : 'border-muted',
+                ]" @click="triggerFileInput">
+                  <input
+id="image" type="file" accept="image/*" class="hidden" @change="handleChange"
+                    @blur="handleBlur" >
+                  <div v-if="preview">
+                    <div class="relative w-full">
+                      <img
+:src="preview || '/placeholder.svg'" alt="Preview"
+                        class="mx-auto max-h-[300px] rounded-lg object-contain" >
+                      <Button
+type="button" variant="destructive" size="icon" class="absolute right-2 top-2"
+                        @click.stop="clearImagePreview">
+                        <X class="h-4 w-4" />
+                      </Button>
+                    </div>
+                  </div>
+                  <div v-else class="flex flex-col items-center justify-center text-center">
+                    <ImagePlus class="mb-2 h-10 w-10 text-muted-foreground" />
+                    <p class="text-sm font-medium">Click to upload an image</p>
+                    <p class="text-xs text-muted-foreground">
+                      PNG, JPG or GIF (max. 2MB)
+                    </p>
                   </div>
                 </div>
-              </template>
-            </label>
-            <input
-id="file-upload" type="file" accept="image/*" class="hidden" @change="handleChange"
-              @blur="handleBlur" >
-          </Card>
-        </FormControl>
-        <FormMessage />
-      </FormItem>
-    </FormField>
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          </FormField>
+        </div>
+        <Separator />
 
-    <FormField v-slot="{ componentField }" name="location">
-      <FormItem>
-        <FormLabel class="text-white">Add Location</FormLabel>
-        <FormControl>
-          <Input
-v-bind="componentField" placeholder="Enter location"
-            class="bg-[#1a1a1d] text-white border border-[#333] placeholder-gray-500 focus:border-blue-500 focus:ring-0 rounded-lg" />
-        </FormControl>
-        <FormMessage />
-      </FormItem>
-    </FormField>
+        <div class="space-y-2">
+          <FormField v-slot="{ componentField }" name="caption">
+            <FormItem>
+              <FormLabel>Caption</FormLabel>
+              <FormControl>
+                <Textarea
+class="min-h-[100px] resize-none" placeholder="Write a caption for your post..."
+                  v-bind="componentField" />
+              </FormControl>
+            </FormItem>
+          </FormField>
+        </div>
 
-    <FormField v-slot="{ componentField }" name="tags">
-      <FormItem>
-        <FormLabel class="text-white">Add Tags</FormLabel>
-        <FormControl>
-          <TagsInput
-class="bg-[#1a1a1d] border border-[#333] rounded-lg" :model-value="componentField.modelValue"
-            @update:model-value="componentField['onUpdate:modelValue']">
-            <TagsInputItem
-v-for="item in componentField.modelValue" :key="item"
-              class="bg-[#2c2c2f] text-white border border-[#444]" :value="item">
-              <TagsInputItemText />
-              <TagsInputItemDelete />
-            </TagsInputItem>
-            <TagsInputInput placeholder="#india" class="bg-transparent text-white placeholder-gray-500" />
-          </TagsInput>
-        </FormControl>
-        <FormMessage />
-      </FormItem>
-    </FormField>
+        <div class="space-y-2">
+          <FormField v-slot="{ componentField }" name="tags">
+            <FormItem>
+              <FormLabel>Tags</FormLabel>
+              <FormControl>
+                <TagsInput
+:model-value="componentField.modelValue"
+                  @update:model-value="componentField['onUpdate:modelValue']">
+                  <TagsInputItem v-for="item in componentField.modelValue" :key="item" :value="item">
+                    <TagsInputItemText />
+                    <TagsInputItemDelete />
+                  </TagsInputItem>
+                  <TagsInputInput placeholder="Add tags (press Enter after each tag)" />
+                </TagsInput>
+              </FormControl>
+              <FormDescription>
+                Tags help people discover your post. Enter tags without the #
+                symbol.
+              </FormDescription>
+              <FormMessage />
+            </FormItem>
+          </FormField>
+        </div>
 
-    <div class="pt-4">
-      <Button
-type="submit"
-        class="w-full font-medium py-2 px-4 rounded-lg transition-all flex items-center justify-center gap-2"
-        :disabled="pending">
-        <template v-if="pending">
-          <Icon name="line-md:loading-loop" class="text-2xl animate-spin" />
-          Posting...
-        </template>
-        <template v-else>Post</template>
-      </Button>
-    </div>
+        <div class="space-y-2">
+          <FormField v-slot="{ componentField }" name="location">
+            <FormItem>
+              <FormLabel>Location</FormLabel>
+              <FormControl>
+                <Input v-bind="componentField" placeholder="Add location" />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          </FormField>
+        </div>
+      </CardContent>
+      <CardFooter class="flex justify-end">
+        <Button type="submit" :disabled="pending">
+          <template v-if="pending">
+            <Icon name="line-md:loading-loop" class="text-2xl animate-spin" />
+            Posting...
+          </template>
+          <template v-else>Post</template>
+        </Button>
+      </CardFooter>
+    </Card>
   </form>
 </template>
